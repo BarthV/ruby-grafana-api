@@ -65,7 +65,16 @@ module Grafana
       @logger = Logger.new(STDOUT)
       @headers = nil
 
-      self.login(user, pass)
+      if settings['headers'].key?('Authorization')
+        # API key Auth
+        @headers = {
+          :content_type => 'application/json; charset=UTF-8',
+          :Authorization => settings['headers']['Authorization']
+        }
+      else
+        # Regular login Auth
+        self.login(user, pass)
+      end
       return self
     end
 
